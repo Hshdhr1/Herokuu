@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "heroku",
+  "version": "${version}",
+  "name": "Heroku Mod",
+  "description": "Advanced Minecraft Userbot with Telegram integration",
+  "authors": [
+    "Coddrago"
+  ],
+  "contact": {
+    "homepage": "https://github.com/coddrago/Heroku",
+    "sources": "https://github.com/coddrago/Heroku"
+  },
+  "license": "AGPL-3.0",
+  "icon": "assets/heroku/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.coddrago.heroku.HerokuMod"
+    ]
+  },
+  "mixins": [
+    "heroku.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.1",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "flan": "*"
+  }
+}
