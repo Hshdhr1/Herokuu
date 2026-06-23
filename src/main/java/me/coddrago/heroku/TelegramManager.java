@@ -18,19 +18,43 @@ public class TelegramManager {
         this.dispatcher = dispatcher;
     }
 
-    public void start() {
-        // In a real implementation, we would initialize TDLib here
-        // For this port, we provide the structure
-        HerokuMod.LOGGER.info("Starting Telegram Manager...");
+    private AuthWebServer webServer;
 
-        // This is a placeholder for the actual TDLib client initialization
+    public void start(boolean qrOnly) {
+        HerokuMod.LOGGER.info("Starting Telegram Manager... QR Only: " + qrOnly);
+
+        if (!qrOnly) {
+            startWebServer();
+        } else {
+            // Logic for QR auth
+            HerokuMod.LOGGER.info("QR Auth requested");
+            QRCodeGenerator.generateConsoleQR("https://t.me/placeholder_login_link");
+        }
+
         // client = Client.create(new UpdateHandler(), null, null);
     }
 
+    private void startWebServer() {
+        try {
+            webServer = new AuthWebServer(8080, this);
+            webServer.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+            HerokuMod.LOGGER.info("Auth Web Server started at http://localhost:8080");
+        } catch (IOException e) {
+            HerokuMod.LOGGER.error("Failed to start Web Server", e);
+        }
+    }
+
     public void stop() {
+        if (webServer != null) {
+            webServer.stop();
+            webServer = null;
+            HerokuMod.LOGGER.info("Auth Web Server stopped.");
+        }
         if (client != null) {
             client.send(new TdApi.Close(), result -> HerokuMod.LOGGER.info("Telegram client closed"));
+            client = null;
         }
+        isAuthorized = false;
     }
 
     private class UpdateHandler implements Client.ResultHandler {

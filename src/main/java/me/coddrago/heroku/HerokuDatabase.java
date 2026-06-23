@@ -4,20 +4,18 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.fabricmc.loader.api.FabricLoader;
-
 import java.io.*;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.file.Paths;
 
 public class HerokuDatabase {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Path HEROKU_DIR = Paths.get("heroku");
     private final Path dbFile;
     private JsonObject data = new JsonObject();
 
     public HerokuDatabase(long tgId) {
-        this.dbFile = FabricLoader.getInstance().getConfigDir().resolve("heroku-db-" + tgId + ".json");
+        this.dbFile = HEROKU_DIR.resolve("db-" + tgId + ".json");
         read();
     }
 

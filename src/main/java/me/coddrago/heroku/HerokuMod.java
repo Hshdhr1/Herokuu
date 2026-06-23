@@ -21,6 +21,8 @@ public class HerokuMod implements ModInitializer {
     public void onInitialize() {
         LOGGER.info("Heroku Mod Initializing...");
 
+        net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STARTING.register(ChatBridge::setServer);
+
         config = HerokuConfig.load();
         config.save(); // Ensure file exists
 
@@ -33,8 +35,10 @@ public class HerokuMod implements ModInitializer {
         CommandRegistry.register(new InfoCommand());
         CommandRegistry.register(new EvalCommand());
 
-        // Start services
-        telegramManager.start();
+        // Minecraft Commands
+        HerokuCommand.register();
+
+        // Chat bridge init
         chatBridge.init();
 
         LOGGER.info("Heroku Mod Initialized successfully!");

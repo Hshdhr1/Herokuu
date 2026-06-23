@@ -22,11 +22,18 @@ public class ChatBridge {
         });
     }
 
+    private static net.minecraft.server.MinecraftServer server;
+
+    public static void setServer(net.minecraft.server.MinecraftServer serverInstance) {
+        server = serverInstance;
+    }
+
     public void onTelegramMessage(TdApi.Message message) {
-        if (message.content instanceof TdApi.MessageText) {
+        if (message.content instanceof TdApi.MessageText && server != null) {
             String text = ((TdApi.MessageText) message.content).text.text;
-            // Broadcast to all Minecraft players
-            // This requires access to the Minecraft server instance
+            String sender = "Telegram User"; // Real name would be fetched via TdApi.GetUser
+            Text formatted = Text.literal("§b[Telegram] §r" + sender + ": " + text);
+            server.getPlayerManager().broadcast(formatted, false);
         }
     }
 }
